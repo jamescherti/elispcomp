@@ -32,10 +32,10 @@ options:
   -e EMACS_BIN, --emacs-bin EMACS_BIN
                         Path to the Emacs binary. Defaults to 'emacs'.
   -j JOBS, --jobs JOBS  Specify the number of parallel jobs for compilation. Defaults to half the number of available CPUs if not provided.
-  -b, --disable-byte-compile
-                        Disable byte-compile. Default: enabled.
-  -n, --disable-native-compile
-                        Disable native-compile. Default: enabled.
+  -b, --disable-byte-comp
+                        Disable byte compilation. Default: enabled.
+  -n, --disable-native-comp
+                        Disable native compilation. Default: enabled.
 ```
 
 ## License

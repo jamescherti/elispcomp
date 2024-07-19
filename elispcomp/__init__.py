@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 #
-"""Recursively byte-compile and native-compile .el files."""
+"""Recursively byte compilation and native compilation .el files."""
 
 import argparse
 import os
@@ -31,7 +31,7 @@ EMACS_NATIVE_COMP_ENABLED = True
 
 
 class ElispCompileCli:
-    """Recursively byte-compile and native-compile .el files."""
+    """Recursively byte compilation and native compilation .el files."""
 
     def __init__(self):
         """Run the 'emacscomp' command-line interface."""
@@ -90,7 +90,7 @@ class ElispCompileCli:
 
         parser.add_argument(
             "-b",
-            "--disable-byte-compile",
+            "--disable-byte-comp",
             default=False,
             action="store_true",
             required=False,
@@ -99,11 +99,11 @@ class ElispCompileCli:
 
         parser.add_argument(
             "-n",
-            "--disable-native-compile",
+            "--disable-native-comp",
             default=False,
             action="store_true",
             required=False,
-            help="Disable native-compile. Default: enabled.",
+            help="Disable native compilation. Default: enabled.",
         )
 
         self.args = parser.parse_args()
@@ -138,9 +138,9 @@ class ElispCompileCli:
         env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
             str(self.args.jobs) if self.args.jobs else ""
         env["EMACS_NATIVE_COMP_ENABLED"] = \
-            '0' if self.args.disable_native_compile else '1'
+            '0' if self.args.disable_native_comp else '1'
         env["EMACS_BYTE_COMP_ENABLED"] = \
-            '0' if self.args.disable_byte_compile else '1'
+            '0' if self.args.disable_byte_comp else '1'
         env["EMACS_ELN_CACHE_DIR"] = \
             self.args.eln_cache if self.args.eln_cache else ""
 
