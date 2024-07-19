@@ -114,12 +114,14 @@ class ElispCompileCli:
                   f"{self.args.emacs_bin}", file=sys.stderr)
             sys.exit(1)
 
-        if not os.path.isdir(self.args.eln_cache):
+        if self.args.eln_cache and not os.path.exists(self.args.eln_cache):
             try:
                 os.mkdir(self.args.eln_cache)
             except OSError as err:
                 print(f"Error: {err}")
                 sys.exit(1)
+            else:
+                self.args.eln_cache = os.path.abspath(self.args.eln_cache)
 
         for directory in self.args.directories:
             if not os.path.exists(directory):
@@ -134,7 +136,7 @@ class ElispCompileCli:
 
     def _compile(self, directory: str):
         env = os.environ.copy()
-        env["EMACS_BYTE_COMP_DIR"] = directory
+        env["EMACS_BYTE_COMP_DIR"] = os.path.abspath(directory)
         env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
             str(self.args.jobs) if self.args.jobs else ""
         env["EMACS_NATIVE_COMP_ENABLED"] = \
