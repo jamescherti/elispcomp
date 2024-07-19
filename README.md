@@ -20,7 +20,7 @@ The pip command above will install the `elispcomp` executable in the directory `
 ```
 usage: elispcomp [--option] [N]
 
-Recursively byte compilation and native compilation .el files.
+Recursively byte and native compile .el files.
 
 positional arguments:
   N                     The directories to be scanned recursively by Emacs to locate the '.el' files for compilation.
