@@ -25,9 +25,7 @@ import subprocess
 import sys
 
 from .lisp_code import LISP_CODE
-
-# Global variables
-EMACS_NATIVE_COMP_ENABLED = True
+from .misc import unique_directories
 
 
 class ElispCompileCli:
@@ -60,7 +58,7 @@ class ElispCompileCli:
 
         parser.add_argument(
             "-c",
-            "--eln-cache-dir",
+            "--eln-cache",
             default=None,
             required=False,
             help=("The eln-cache directory where Emacs stores the "
@@ -105,11 +103,18 @@ class ElispCompileCli:
             help="Disable native compilation. Default: enabled",
         )
 
+        parser.add_argument(
+            "-a",
+            "--load-path",
+            default=[],
+            action="append",
+            required=False,
+            help=("Recursively adds the subdirectories of the specified "
+                  "directory to the Emacs `load-path`. This option can be "
+                  "used multiple times to include several directories."),
+        )
+
         self.args = parser.parse_args()
-        if self.args.disable_native_comp and self.args.disable_byte_comp:
-            print("Error: Nothing to do. Both byte compilation and native "
-                  "compilation are disabled.", file=sys.stderr)
-            sys.exit(1)
 
     def _flight_checks(self):
         if not shutil.which(self.args.emacs_bin):
@@ -117,18 +122,18 @@ class ElispCompileCli:
                   f"{self.args.emacs_bin}", file=sys.stderr)
             sys.exit(1)
 
-        if self.args.eln_cache_dir and \
-                not os.path.exists(self.args.eln_cache_dir):
+        if self.args.eln_cache and \
+                not os.path.exists(self.args.eln_cache):
             try:
-                os.mkdir(self.args.eln_cache_dir)
+                os.mkdir(self.args.eln_cache)
             except OSError as err:
                 print(f"Error: {err}")
                 sys.exit(1)
             else:
-                self.args.eln_cache_dir = \
-                    os.path.abspath(self.args.eln_cache_dir)
+                self.args.eln_cache = \
+                    os.path.abspath(self.args.eln_cache)
 
-        for directory in self.args.directories:
+        for directory in self.args.directories + self.args.load_path:
             if not os.path.exists(directory):
                 print(f"Error: The directory does not exist at the "
                       f"specified path: {directory}")
@@ -139,9 +144,15 @@ class ElispCompileCli:
                       f"{directory}")
                 sys.exit(1)
 
+        if self.args.disable_native_comp and self.args.disable_byte_comp:
+            print("Error: Nothing to do. Both byte compilation and native "
+                  "compilation are disabled.", file=sys.stderr)
+            sys.exit(1)
+
     def _compile(self, directory: str):
         env = os.environ.copy()
-        env["EMACS_BYTE_COMP_DIR"] = os.path.abspath(directory)
+        directory = os.path.abspath(directory)
+        env["EMACS_BYTE_COMP_DIR"] = directory
         env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
             str(self.args.jobs) if self.args.jobs else ""
         env["EMACS_NATIVE_COMP_ENABLED"] = \
@@ -149,7 +160,10 @@ class ElispCompileCli:
         env["EMACS_BYTE_COMP_ENABLED"] = \
             '0' if self.args.disable_byte_comp else '1'
         env["EMACS_ELN_CACHE_DIR"] = \
-            self.args.eln_cache_dir if self.args.eln_cache_dir else ""
+            self.args.eln_cache if self.args.eln_cache else ""
+
+        env["EMACS_LOAD_PATH_LIST"] = \
+            "\n".join(unique_directories([directory] + self.args.load_path))
 
         emacs_bin = shutil.which(self.args.emacs_bin)
         print("[INFO] Emacs binary:", emacs_bin)

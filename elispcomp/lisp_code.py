@@ -20,8 +20,18 @@
 
 LISP_CODE = """
 (progn
+  (defun my-add-load-paths (paths-string)
+    "Add directories specified in PATHS-STRING to `load-path`.
+PATHS-STRING should be a string containing directories separated by newline
+characters."
+    (let ((paths (split-string paths-string "\n" t)))
+      (dolist (path paths)
+        (let ((default-directory (expand-file-name path)))
+          (normal-top-level-add-subdirs-to-load-path)))))
+
   (setq byte-compile-verbose nil)
   (let* ((default-directory (getenv "EMACS_BYTE_COMP_DIR"))
+         (load-path-list (getenv "EMACS_LOAD_PATH_LIST"))
          (eln-cache-dir (getenv "EMACS_ELN_CACHE_DIR"))
          (jobs (getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
          (byte-comp-enabled
@@ -42,9 +52,6 @@ LISP_CODE = """
                       user-emacs-directory)))
             (t (error "Cannot change the eln-cache-dir directory"))))
 
-    ;; LOAD DIRECTORIES
-    (normal-top-level-add-subdirs-to-load-path)
-
     ;; SHOW MESSAGES
     (message "[INFO] Recursively compile the directory: %s"
      default-directory)
@@ -53,6 +60,10 @@ LISP_CODE = """
     (message "[INFO] Jobs: %s" jobs)
     (message "[INFO] Emacs user directory: %s" user-emacs-directory)
     (message "[INFO] eln-cache directory: %s\n" eln-cache-dir)
+    (message "[INFO] Load path directories:\n%s\n" load-path-list)
+
+    ;; LOAD DIRECTORIES
+    (my-add-load-paths load-path-list)
 
     ;; BYTE-COMP
     (when byte-comp-enabled
