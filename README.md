@@ -59,9 +59,11 @@ options:
 
 ### Can't I achieve the same result using Emacs?
 
-Indeed, you can achieve similar results using Emacs and Elisp directly. The `elispcomp` command-line tool is a wrapper that makes it easy to compile Emacs Lisp (Elisp) code directly from the terminal or from a script. It provides options and ensures that the byte compilation and native compilation processes are truly finished before quitting with an error code.
+Indeed, when configured appropriately, Emacs can compile to both `.elc` and `.eln` files.
 
-It can also be used in conjunction with other tools like `parallel` to speed up the compilation process.
+The `elispcomp` command-line tool is a wrapper that makes it easy to compile Emacs Lisp (Elisp) code directly from the terminal or from a script. It provides options and ensures that the byte compilation and native compilation processes are truly finished before quitting with an error code.
+
+The `elispcomp` command-line tool can also be used in conjunction with other tools like `parallel` to speed up the compilation process.
 
 ## License
 
