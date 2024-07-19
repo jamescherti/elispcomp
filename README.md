@@ -69,6 +69,12 @@ The `elispcomp` command-line tool is an Emacs wrapper that makes it easy to comp
 
 The `elispcomp` command-line tool can also be used in conjunction with other tools like `parallel` to speed up the compilation process.
 
+### How does the author utilize elispcomp?
+
+The author utilizes the `elispcomp` tool to compile multiple Emacs Lisp files across various machines and Emacs versions. With a diverse range of machines and Emacs versions in his workflow, `elispcomp` ensures consistent compilation results and compatibility.
+
+Additionally, the author employs the `parallel` command-line tool to enhance the efficiency of the byte-compilation process. This tool allows the distribution of the compilation workload across multiple processors, significantly accelerating the process.
+
 ## License
 
 Copyright (c) 2024 [James Cherti](https://www.jamescherti.com)
