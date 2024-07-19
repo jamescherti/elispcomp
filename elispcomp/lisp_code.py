@@ -22,7 +22,7 @@ LISP_CODE = """
 (progn
   (setq byte-compile-verbose nil)
   (let* ((default-directory (getenv "EMACS_BYTE_COMP_DIR"))
-         (eln-path (getenv "EMACS_ELN_CACHE_DIR"))
+         (eln-cache-dir (getenv "EMACS_ELN_CACHE_DIR"))
          (jobs (getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
          (byte-comp-enabled
           (/= 0 (string-to-number (getenv "EMACS_BYTE_COMP_ENABLED"))))
@@ -32,25 +32,27 @@ LISP_CODE = """
                (fboundp 'native-comp-available-p)
                (native-comp-available-p))))
     ;; SET ELN-CACHE DIR
-    (when (and native-comp-enabled (not (string= eln-path "")))
+    (when (and native-comp-enabled (not (string= eln-cache-dir "")))
       (cond ((fboundp 'startup-redirect-eln-cache) ; Emacs >= 28
-             (startup-redirect-eln-cache eln-path))
+             (startup-redirect-eln-cache eln-cache-dir))
             ((boundp 'native-comp-eln-load-path)
              (setcar native-comp-eln-load-path
-                     (expand-file-name (convert-standard-filename eln-path)
-                                       user-emacs-directory)))
-            (t (error "Cannot change the eln-path directory"))))
+                     (expand-file-name
+                      (convert-standard-filename eln-cache-dir)
+                      user-emacs-directory)))
+            (t (error "Cannot change the eln-cache-dir directory"))))
 
     ;; LOAD DIRECTORIES
     (normal-top-level-add-subdirs-to-load-path)
 
     ;; SHOW MESSAGES
-    (message "[INFO] Recursively compile the directory: %s\n"
+    (message "[INFO] Recursively compile the directory: %s"
      default-directory)
     (message "[INFO] Byte comp enabled: %s" byte-comp-enabled)
     (message "[INFO] Native comp enabled: %s" native-comp-enabled)
-    (message "[INFO] Jobs: %s\n" jobs)
-    (message "[INFO] Emacs user directory: %s\n" user-emacs-directory)
+    (message "[INFO] Jobs: %s" jobs)
+    (message "[INFO] Emacs user directory: %s" user-emacs-directory)
+    (message "[INFO] eln-cache directory: %s\n" eln-cache-dir)
 
     ;; BYTE-COMP
     (when byte-comp-enabled
@@ -59,7 +61,7 @@ LISP_CODE = """
 
     ;; NATIVE-COMP
     (when native-comp-enabled
-      (message "\\n[TASK] Native compile")
+      (message "[TASK] Native compile")
       (setq native-comp-async-report-warnings-errors t)
       (setq native-comp-warning-on-missing-source t)
       (when (and jobs (not (string= jobs "")))
