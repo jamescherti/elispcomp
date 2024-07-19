@@ -22,7 +22,7 @@ Here is an example of how to byte-compile and native-compile all .el files locat
 elispcomp --eln-cache-dir ~/.eln-cache ~/.emacs.d/lisp
 ```
 
-Available Options:
+The available options are as follows:
 ```
 usage: elispcomp [--option] [N]
 
