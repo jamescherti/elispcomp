@@ -17,7 +17,7 @@ The pip command above will install the `elispcomp` executable in the directory `
 
 ## Usage
 
-Here is an example of how to byte-compile and native-compile all .el files located in the `~/.emacs.d/lisp` directory. The native-compiled files will be stored in the ~/.eln-cache directory:
+Here is an example of how to byte-compile and native-compile all .el files located in the `~/.emacs.d/lisp` directory. The native-compiled files will be stored in the `~/.eln-cache` directory:
 ```
 elispcomp --eln-cache-dir ~/.eln-cache ~/.emacs.d/lisp
 ```
