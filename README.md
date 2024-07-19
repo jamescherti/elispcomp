@@ -8,16 +8,16 @@ When configured appropriately, Emacs can compile to both .elc and .eln files. Ho
 
 ## Installation
 
-Here is how to install `elispcomp` using pip:
+To get started with `elispcomp`, you can install it using `pip`, Python’s package installer:
 ```
 pip install --user elispcomp
 ```
 
-The pip command above will install the `elispcomp` executable in the directory `~/.local/bin/`.
+This command installs `elispcomp` and places the executable in your `~/.local/bin/` directory, making it easily accessible from your command line.
 
 ## Usage
 
-Here is an example of how to byte-compile and native-compile all .el files located in the `~/.emacs.d/lisp` directory. The native-compiled files will be stored in the `~/.eln-cache` directory:
+The `elispcomp` command line tool is straightforward to use. To compile all `.el` files located in the `~/.emacs.d/lisp` directory, and store the native-compiled files in the `~/.emacs.d/eln-cache` directory:
 ```
 elispcomp --eln-cache ~/.emacs.d/eln-cache ~/.emacs.d/lisp
 ```
