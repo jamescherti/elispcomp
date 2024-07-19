@@ -85,7 +85,7 @@ class ElispCompileCli:
             required=False,
             help=("Specify the number of parallel jobs for compilation. "
                   "Defaults to half the number of available CPUs if "
-                  "not provided"),
+                  "not provided."),
         )
 
         parser.add_argument(
