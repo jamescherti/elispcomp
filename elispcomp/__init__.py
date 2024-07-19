@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 #
-"""Recursively byte compilation and native compilation .el files."""
+"""Recursively byte and native compile .el files."""
 
 import argparse
 import os
@@ -31,7 +31,7 @@ EMACS_NATIVE_COMP_ENABLED = True
 
 
 class ElispCompileCli:
-    """Recursively byte compilation and native compilation .el files."""
+    """Recursively byte and native compile .el files."""
 
     def __init__(self):
         """Run the 'emacscomp' command-line interface."""
