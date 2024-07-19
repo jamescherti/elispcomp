@@ -1,10 +1,10 @@
 # elispcomp - Compiling Emacs Lisp code from the command-line
 
-The `elispcomp` command-line tool allows compiling Elisp (Emacs Lisp) code efficiently, providing optimized .elc and .eln files for improved performance in Emacs.
+The elispcomp command line tool allows compiling Emacs Lisp (Elisp) code directly from the terminal or from a shell script. It facilitates the generation of optimized .elc (byte-compiled) and .eln (native-compiled) files, which can significantly improve the performance of Emacs.
 
-This tool simplifies the compilation of Emacs Lisp (Elisp) code by generating optimized .elc and .eln files directly from the command-line. Utilizing Emacs, it recursively compiles all Elisp files within a specified directory. The tool supports various compilation configurations, enabling users to adapt the process to their specific needs.
+The comnand line tool executes a headless instance of Emacs that recursively scans the specified directories, byte compiling and native compiling all .el files it encounters. It supports various configuration options, allowing you to adapt the compilation process to suit your needs.
 
-With an emphasis on simplicity and efficiency, it offers a powerful solution for managing and optimizing Emacs Lisp codebases from the command-line.
+When configured appropriately, Emacs can compile to both .elc and .eln files. However, for those who wish to automate the background compilation of .el files using a script, the elispcomp command-line tool can be beneficial in ensuring that their Emacs setup remains up-to-date without manual intervention.
 
 ## Installation
 
@@ -19,7 +19,7 @@ The pip command above will install the `elispcomp` executable in the directory `
 
 Here is an example of how to byte-compile and native-compile all .el files located in the `~/.emacs.d/lisp` directory. The native-compiled files will be stored in the `~/.eln-cache` directory:
 ```
-elispcomp --eln-cache ~/.eln-cache ~/.emacs.d/lisp
+elispcomp --eln-cache ~/.emacs.d/eln-cache ~/.emacs.d/lisp
 ```
 
 The available options are as follows:
