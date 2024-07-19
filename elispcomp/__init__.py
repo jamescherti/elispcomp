@@ -106,6 +106,10 @@ class ElispCompileCli:
         )
 
         self.args = parser.parse_args()
+        if self.args.disable_native_comp and self.args.disable_byte_comp:
+            print("Error: Nothing to do. Both byte compilation and native "
+                  "compilation are disabled.", file=sys.stderr)
+            sys.exit(1)
 
     def _flight_checks(self):
         if not shutil.which(self.args.emacs_bin):

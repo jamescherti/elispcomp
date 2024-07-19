@@ -18,24 +18,24 @@ The pip command above will install the `elispcomp` executable in the directory `
 ## Usage
 
 ```
-usage: elispcomp [--option] [args]
+usage: elispcomp [--option] [N]
 
-Recursively byte-compile and native-compile .el files.
+Recursively byte compilation and native compilation .el files.
 
 positional arguments:
   N                     The directories to be scanned recursively by Emacs to locate the '.el' files for compilation.
 
 options:
   -h, --help            show this help message and exit
-  -c ELN_CACHE, --eln-cache ELN_CACHE
-                        The eln-cache directory where Emacs stores the compiled native compiled code. Defaults to the default Emacs path.
+  -c ELN_CACHE_DIR, --eln-cache-dir ELN_CACHE_DIR
+                        The eln-cache directory where Emacs stores the compiled native compiled code. Defaults to the default Emacs eln-cache directory.
   -e EMACS_BIN, --emacs-bin EMACS_BIN
-                        Path to the Emacs binary. Defaults to 'emacs'.
-  -j JOBS, --jobs JOBS  Specify the number of parallel jobs for compilation. Defaults to half the number of available CPUs if not provided.
+                        Path to the Emacs binary. Defaults: emacs
+  -j JOBS, --jobs JOBS  Specify the number of parallel jobs for compilation. Default: Half the number of available CPUs
   -b, --disable-byte-comp
-                        Disable byte compilation. Default: enabled.
+                        Disable byte-compile. Default: enabled
   -n, --disable-native-comp
-                        Disable native compilation. Default: enabled.
+                        Disable native compilation. Default: enabled
 ```
 
 ## License
