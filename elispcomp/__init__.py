@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 #
-"Recursively byte-compile and native-compile .el files."
+"""Recursively byte-compile and native-compile .el files."""
 
 import argparse
 import os
@@ -27,27 +27,25 @@ import sys
 from .lisp_code import LISP_CODE
 
 # Global variables
-EMACS_BYTE_COMP_ENABLED = True
 EMACS_NATIVE_COMP_ENABLED = True
 
-EMACS_D = os.path.expanduser("~/.emacs.d")
 
+class ElispCompileCli:
+    """Recursively byte-compile and native-compile .el files."""
 
-class EmacsCompile:
     def __init__(self):
+        """Run the 'emacscomp' command-line interface."""
         self.args = None
         self._parse_args()
 
         self._flight_checks()
-        self.update_os_environment()
 
         if not self.args.directories:
             print("Nothing to do.")
             sys.exit(1)
 
         for directory in self.args.directories:
-            print(f"[INFO] Recursively compile the directory: {directory}")
-            self.compile(directory)
+            self._compile(directory)
 
     def _parse_args(self):
         """Parse command-line arguments."""
@@ -60,15 +58,14 @@ class EmacsCompile:
                   "to locate the '.el' files for compilation."),
         )
 
-        default_eln_cache_dir = os.path.join(EMACS_D, "eln-cache")
         parser.add_argument(
             "-c",
             "--eln-cache",
-            default=default_eln_cache_dir,
+            default=None,
             required=False,
             help=("The eln-cache directory where Emacs stores the "
                   "compiled native compiled code. Defaults to "
-                  f"'{default_eln_cache_dir}'"),
+                  "the default Emacs path."),
         )
 
         parser.add_argument(
@@ -93,40 +90,25 @@ class EmacsCompile:
 
         parser.add_argument(
             "-b",
-            "--byte-compile",
+            "--disable-byte-compile",
             default=False,
             action="store_true",
             required=False,
-            help="Enable byte-compile. Disabled by default.",
+            help="Disable byte-compile. Default: enabled.",
         )
 
         parser.add_argument(
             "-n",
-            "--native-compile",
+            "--disable-native-compile",
             default=False,
             action="store_true",
             required=False,
-            help="Enable native-compile. Disabled by default.",
+            help="Disable native-compile. Default: enabled.",
         )
 
         self.args = parser.parse_args()
 
-    def update_os_environment(self):
-        os.environ["EMACS_D"] = EMACS_D
-        os.environ["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
-            str(self.args.jobs) if self.args.jobs else ""
-        os.environ["EMACS_NATIVE_COMP_ENABLED"] = \
-            '1' if self.args.native_compile else '0'
-        os.environ["EMACS_BYTE_COMP_ENABLED"] = \
-            '1' if self.args.byte_compile else '0'
-        os.environ["EMACS_ELN_CACHE_DIR"] = self.args.eln_cache
-
     def _flight_checks(self):
-        if not EMACS_BYTE_COMP_ENABLED and not EMACS_NATIVE_COMP_ENABLED:
-            print("Error: Neither byte compilation nor native compilation "
-                  "is enabled.", file=sys.stderr)
-            sys.exit(1)
-
         if not shutil.which(self.args.emacs_bin):
             print("Error: Command not found or not executable: "
                   f"{self.args.emacs_bin}", file=sys.stderr)
@@ -139,10 +121,6 @@ class EmacsCompile:
                 print(f"Error: {err}")
                 sys.exit(1)
 
-        if not os.path.isdir(EMACS_D):
-            print(f"Error: The directory does not exist: {EMACS_D}")
-            sys.exit(1)
-
         for directory in self.args.directories:
             if not os.path.exists(directory):
                 print(f"Error: The directory does not exist at the "
@@ -154,12 +132,21 @@ class EmacsCompile:
                       f"{directory}")
                 sys.exit(1)
 
-    def compile(self, directory: os.PathLike):
+    def _compile(self, directory: str):
         env = os.environ.copy()
         env["EMACS_BYTE_COMP_DIR"] = directory
+        env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
+            str(self.args.jobs) if self.args.jobs else ""
+        env["EMACS_NATIVE_COMP_ENABLED"] = \
+            '0' if self.args.disable_native_compile else '1'
+        env["EMACS_BYTE_COMP_ENABLED"] = \
+            '0' if self.args.disable_byte_compile else '1'
+        env["EMACS_ELN_CACHE_DIR"] = \
+            self.args.eln_cache if self.args.eln_cache else ""
 
-        print("[INFO] Emacs binary:", self.args.emacs_bin)
-        emacs_cmd = [self.args.emacs_bin, "--batch", "--eval", LISP_CODE]
+        emacs_bin = shutil.which(self.args.emacs_bin)
+        print("[INFO] Emacs binary:", emacs_bin)
+        emacs_cmd = [emacs_bin, "--batch", "--eval", LISP_CODE]
         try:
             subprocess.check_call(emacs_cmd, env=env,
                                   stderr=subprocess.STDOUT)
@@ -170,5 +157,5 @@ class EmacsCompile:
 
 
 def command_line_interface():
-    """The command-line interface."""
-    EmacsCompile()
+    """Run the command-line interface."""
+    ElispCompileCli()

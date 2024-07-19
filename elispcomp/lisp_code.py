@@ -16,17 +16,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 #
-"Lisp code that recursively byte-compile and native-compile .el files."
+"""Lisp code that recursively byte-compile and native-compile .el files."""
 
 LISP_CODE = """
 (progn
-  (setq byte-compile-warnings t)
-  (setq byte-compile-verbose t)
-  (let* ((user-emacs-directory (getenv "EMACS_D"))
-         (default-directory (getenv "EMACS_BYTE_COMP_DIR"))
+  (setq byte-compile-verbose nil)
+  (let* ((default-directory (getenv "EMACS_BYTE_COMP_DIR"))
          (eln-path (getenv "EMACS_ELN_CACHE_DIR"))
-         (jobs (string-to-number
-                (getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER")))
+         (jobs (getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
          (byte-comp-enabled
           (/= 0 (string-to-number (getenv "EMACS_BYTE_COMP_ENABLED"))))
          (native-comp-enabled
@@ -35,7 +32,7 @@ LISP_CODE = """
                (fboundp 'native-comp-available-p)
                (native-comp-available-p))))
     ;; SET ELN-CACHE DIR
-    (when native-comp-enabled
+    (when (and native-comp-enabled (not (string= eln-path "")))
       (cond ((fboundp 'startup-redirect-eln-cache) ; Emacs >= 28
              (startup-redirect-eln-cache eln-path))
             ((boundp 'native-comp-eln-load-path)
@@ -48,10 +45,12 @@ LISP_CODE = """
     (normal-top-level-add-subdirs-to-load-path)
 
     ;; SHOW MESSAGES
-    (message "[INFO] Byte comp enabled: %s" native-comp-enabled)
-    (message "[INFO] Native comp enabled: %s" byte-comp-enabled)
-    (message "[INFO] Emacs user directory: %s\n" user-emacs-directory)
+    (message "[INFO] Recursively compile the directory: %s\n"
+     default-directory)
+    (message "[INFO] Byte comp enabled: %s" byte-comp-enabled)
+    (message "[INFO] Native comp enabled: %s" native-comp-enabled)
     (message "[INFO] Jobs: %s\n" jobs)
+    (message "[INFO] Emacs user directory: %s\n" user-emacs-directory)
 
     ;; BYTE-COMP
     (when byte-comp-enabled
@@ -64,10 +63,10 @@ LISP_CODE = """
       (setq native-comp-async-report-warnings-errors t)
       (setq native-comp-warning-on-missing-source t)
       (when (and jobs (not (string= jobs "")))
-        (setq native-comp-async-jobs-number jobs))
+        (setq native-comp-async-jobs-number (string-to-number jobs)))
       (setq native-comp-deferred-compilation nil)
       (setq package-native-compile nil)
       (native-compile-async default-directory 'recursively)
       (while comp-files-queue
-        (sleep-for 0.1)))))
+        (sleep-for 0.25)))))
 """
