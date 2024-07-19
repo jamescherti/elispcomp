@@ -59,4 +59,4 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Links
 
-- [The 'elispcomp' Git repository](https://github.com/jamescherti/elispcomp)
+- [elispcomp @GitHub](https://github.com/jamescherti/elispcomp)
