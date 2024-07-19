@@ -4,7 +4,7 @@ The elispcomp command line tool allows compiling Emacs Lisp (Elisp) code directl
 
 The comnand line tool executes a headless instance of Emacs that recursively scans the specified directories, byte compiling and native compiling all .el files it encounters. It supports various configuration options, allowing you to adapt the compilation process to suit your needs.
 
-When configured appropriately, Emacs can compile to both .elc and .eln files. However, for those who wish to automate the background compilation of .el files using a script, the elispcomp command-line tool can be beneficial in ensuring that their Emacs setup remains up-to-date without manual intervention.
+When configured appropriately, Emacs can compile to both `.elc` and `.eln` files. However, for those who wish to automate the background compilation of `.el` files using a script, the `elispcomp` command-line tool can be beneficial in ensuring that their Emacs setup remains up-to-date without manual intervention and without starting an Emacs instance.
 
 ## Installation
 
