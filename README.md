@@ -50,7 +50,7 @@ options:
                         Disable byte-compile. Default: enabled
   -n, --disable-native-comp
                         Disable native compilation. Default: enabled
-  -a LOAD_PATH, --load-path LOAD_PATH
+  -i LOAD_PATH, --load-path LOAD_PATH
                         Recursively adds the subdirectories of the specified directory to the Emacs `load-path`. This option can be used multiple times to
                         include several directories.
 ```

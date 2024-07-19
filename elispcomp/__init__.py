@@ -104,7 +104,7 @@ class ElispCompileCli:
         )
 
         parser.add_argument(
-            "-a",
+            "-i",
             "--load-path",
             default=[],
             action="append",
