@@ -19,17 +19,18 @@ This command installs `elispcomp` and places the executable in your `~/.local/bi
 
 The `elispcomp` command line tool is straightforward to use.
 
-Example 1: To compile all `.el` files located in the `~/.emacs.d/lisp` directory:
+First example: To compile all `.el` files located in the `~/.emacs.d/lisp` directory:
 ```
 elispcomp ~/.emacs.d/lisp
 ```
 
-Example 2: To compile all `.el` files located in the `~/.emacs.d/lisp` directory, and store the native-compiled files in the `~/.emacs.d/eln-cache` directory:
+Second example: To compile all `.el` files located in the `~/.emacs.d/lisp` directory, and store the native-compiled files in the `~/.emacs.d/eln-cache` directory:
 ```
 elispcomp --eln-cache ~/.emacs.d/eln-cache ~/.emacs.d/lisp
 ```
 
-The available options are as follows:
+## Command line options overview
+
 ```
 usage: elispcomp [--option] [N]
 
