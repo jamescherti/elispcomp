@@ -42,17 +42,21 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -c ELN_CACHE, --eln-cache ELN_CACHE
-                        The eln-cache directory where Emacs stores the compiled native compiled code. Defaults to the default Emacs eln-cache directory.
+                        The eln-cache directory where Emacs stores the
+                        compiled native compiled code. Defaults to the
+                        default Emacs eln-cache directory.
   -e EMACS_BIN, --emacs-bin EMACS_BIN
                         Path to the Emacs binary. Defaults: emacs
-  -j JOBS, --jobs JOBS  Specify the number of parallel jobs for compilation. Default: Half the number of available CPUs
+  -j JOBS, --jobs JOBS  Specify the number of parallel jobs for compilation.
+                        Default: Half the number of available CPUs
   -b, --disable-byte-comp
                         Disable byte-compile. Default: enabled
   -n, --disable-native-comp
                         Disable native compilation. Default: enabled
   -i LOAD_PATH, --load-path LOAD_PATH
-                        Recursively adds the subdirectories of the specified directory to the Emacs `load-path`. This option can be used multiple times to
-                        include several directories.
+                        Recursively adds the subdirectories of the specified
+                        directory to the Emacs `load-path`. This option can
+                        be used multiple times to include several directories.
 ```
 
 ## Frequently asked questions
