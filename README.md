@@ -29,7 +29,7 @@ Second example: To compile all `.el` files located in the `~/.emacs.d/lisp` dire
 elispcomp --eln-cache ~/.emacs.d/eln-cache ~/.emacs.d/lisp
 ```
 
-## Command line options overview
+## Command line options
 
 ```
 usage: elispcomp [--option] [N]
