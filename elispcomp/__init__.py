@@ -49,7 +49,7 @@ class ElispCompileCli:
 
     def _parse_args(self):
         """Parse command-line arguments."""
-        usage = "%(prog)s [--option] [args]"
+        usage = "%(prog)s [--option] [N]"
         parser = argparse.ArgumentParser(description=__doc__.splitlines()[0],
                                          usage=usage)
         parser.add_argument(
@@ -60,12 +60,12 @@ class ElispCompileCli:
 
         parser.add_argument(
             "-c",
-            "--eln-cache",
+            "--eln-cache-dir",
             default=None,
             required=False,
             help=("The eln-cache directory where Emacs stores the "
                   "compiled native compiled code. Defaults to "
-                  "the default Emacs path."),
+                  "the default Emacs eln-cache directory."),
         )
 
         parser.add_argument(
@@ -73,7 +73,7 @@ class ElispCompileCli:
             "--emacs-bin",
             default="emacs",
             required=False,
-            help="Path to the Emacs binary. Defaults to 'emacs'.",
+            help="Path to the Emacs binary. Defaults: emacs",
         )
 
         half_cpus = os.cpu_count() // 2
@@ -84,8 +84,7 @@ class ElispCompileCli:
             default=half_cpus,
             required=False,
             help=("Specify the number of parallel jobs for compilation. "
-                  "Defaults to half the number of available CPUs if "
-                  "not provided."),
+                  "Default: Half the number of available CPUs"),
         )
 
         parser.add_argument(
@@ -94,7 +93,7 @@ class ElispCompileCli:
             default=False,
             action="store_true",
             required=False,
-            help="Disable byte-compile. Default: enabled.",
+            help="Disable byte-compile. Default: enabled",
         )
 
         parser.add_argument(
@@ -103,7 +102,7 @@ class ElispCompileCli:
             default=False,
             action="store_true",
             required=False,
-            help="Disable native compilation. Default: enabled.",
+            help="Disable native compilation. Default: enabled",
         )
 
         self.args = parser.parse_args()
@@ -114,14 +113,16 @@ class ElispCompileCli:
                   f"{self.args.emacs_bin}", file=sys.stderr)
             sys.exit(1)
 
-        if self.args.eln_cache and not os.path.exists(self.args.eln_cache):
+        if self.args.eln_cache_dir and \
+                not os.path.exists(self.args.eln_cache_dir):
             try:
-                os.mkdir(self.args.eln_cache)
+                os.mkdir(self.args.eln_cache_dir)
             except OSError as err:
                 print(f"Error: {err}")
                 sys.exit(1)
             else:
-                self.args.eln_cache = os.path.abspath(self.args.eln_cache)
+                self.args.eln_cache_dir = \
+                    os.path.abspath(self.args.eln_cache_dir)
 
         for directory in self.args.directories:
             if not os.path.exists(directory):
@@ -144,7 +145,7 @@ class ElispCompileCli:
         env["EMACS_BYTE_COMP_ENABLED"] = \
             '0' if self.args.disable_byte_comp else '1'
         env["EMACS_ELN_CACHE_DIR"] = \
-            self.args.eln_cache if self.args.eln_cache else ""
+            self.args.eln_cache_dir if self.args.eln_cache_dir else ""
 
         emacs_bin = shutil.which(self.args.emacs_bin)
         print("[INFO] Emacs binary:", emacs_bin)
