@@ -68,6 +68,7 @@ characters."
     ;; BYTE-COMP
     (when byte-comp-enabled
       (message "[TASK] Byte compile")
+      (setq no-byte-compile nil)
       (byte-recompile-directory default-directory 0))
 
     ;; NATIVE-COMP
@@ -77,7 +78,9 @@ characters."
       (setq native-comp-warning-on-missing-source t)
       (when (and jobs (not (string= jobs "")))
         (setq native-comp-async-jobs-number (string-to-number jobs)))
-      (setq native-comp-deferred-compilation nil)
+      (setq native-comp-verbose 0)
+      (setq native-comp-deferred-compilation t)
+      (setq native-comp-jit-compilation t)
       (setq package-native-compile nil)
       (native-compile-async default-directory 'recursively)
       (while comp-files-queue
