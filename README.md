@@ -8,7 +8,7 @@ When configured appropriately, Emacs can compile to both `.elc` and `.eln` files
 
 ## Installation
 
-To get started with `elispcomp`, you can install it using `pip`, Python’s package installer:
+To get started with `elispcomp`, you can install it using `pip`:
 ```
 pip install --user elispcomp
 ```
