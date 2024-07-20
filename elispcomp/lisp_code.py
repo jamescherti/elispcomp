@@ -18,7 +18,7 @@
 #
 """Lisp code that recursively byte-compile and native-compile .el files."""
 
-LISP_CODE = """
+LISP_CODE = b"""
 (progn
   (defun my-add-load-paths (paths-string)
     "Add directories specified in PATHS-STRING to `load-path`.
@@ -29,34 +29,48 @@ characters."
         (let ((default-directory (expand-file-name path)))
           (normal-top-level-add-subdirs-to-load-path)))))
 
-  (setq byte-compile-verbose nil)
+  (setq byte-compile-verbose t)
+  (setq byte-compile-warnings t)
+
   (let* ((default-directory (getenv "EMACS_BYTE_COMP_DIR"))
          (load-path-list (getenv "EMACS_LOAD_PATH_LIST"))
          (eln-cache-dir (getenv "EMACS_ELN_CACHE_DIR"))
          (jobs (getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
+         (ensure-native-comp-available
+          (/= 0 (string-to-number (getenv
+                                   "EMACS_ENSURE_NATIVE_COMP_AVAILABLE"))))
          (byte-comp-enabled
           (/= 0 (string-to-number (getenv "EMACS_BYTE_COMP_ENABLED"))))
          (native-comp-enabled
-          (and (/= 0 (string-to-number (getenv "EMACS_NATIVE_COMP_ENABLED")))
-               (featurep 'native-compile)
+          (/= 0 (string-to-number (getenv "EMACS_NATIVE_COMP_ENABLED"))))
+         (native-comp-available
+          (and (featurep 'native-compile)
                (fboundp 'native-comp-available-p)
                (native-comp-available-p))))
+    (when (and native-comp-enabled ensure-native-comp-available
+               (not native-comp-available))
+      (error "Native comp is not available"))
+
     ;; SET ELN-CACHE DIR
-    (when (and native-comp-enabled (not (string= eln-cache-dir "")))
-      (cond ((fboundp 'startup-redirect-eln-cache) ; Emacs >= 28
-             (startup-redirect-eln-cache eln-cache-dir))
-            ((boundp 'native-comp-eln-load-path)
-             (setcar native-comp-eln-load-path
-                     (expand-file-name
-                      (convert-standard-filename eln-cache-dir)
-                      user-emacs-directory)))
-            (t (error "Cannot change the eln-cache-dir directory"))))
+    (if (and native-comp-enabled
+             native-comp-available
+             (not (string= eln-cache-dir "")))
+        (cond ((fboundp 'startup-redirect-eln-cache) ; Emacs >= 28
+               (startup-redirect-eln-cache eln-cache-dir))
+              ((boundp 'native-comp-eln-load-path)
+               (setcar native-comp-eln-load-path
+                       (expand-file-name
+                        (convert-standard-filename eln-cache-dir)
+                        user-emacs-directory)))
+              (t (error "Cannot change the eln-cache-dir directory"))))
 
     ;; SHOW MESSAGES
     (message "[INFO] Recursively compile the directory: %s"
-     default-directory)
+             default-directory)
     (message "[INFO] Byte comp enabled: %s" byte-comp-enabled)
     (message "[INFO] Native comp enabled: %s" native-comp-enabled)
+    (message "[INFO] Ensure native comp available: %s"
+             ensure-native-comp-available)
     (message "[INFO] Jobs: %s" jobs)
     (message "[INFO] Emacs user directory: %s" user-emacs-directory)
     (message "[INFO] eln-cache directory: %s\n" eln-cache-dir)
@@ -72,7 +86,7 @@ characters."
       (byte-recompile-directory default-directory 0))
 
     ;; NATIVE-COMP
-    (when native-comp-enabled
+    (when (and native-comp-enabled native-comp-available)
       (message "[TASK] Native compile")
       (setq native-comp-async-report-warnings-errors t)
       (setq native-comp-warning-on-missing-source t)
