@@ -58,8 +58,9 @@ options:
                         Recursively adds the subdirectories of the specified
                         directory to the Emacs `load-path`. This option can
                         be used multiple times to include several directories.
-  --strict              Enable strict mode to make elispcomp fail when native
-                        compilation is not available. Default: disabled
+  --ensure-native-comp-available
+                        Fail when native compilation is not available.
+                        Default: disabled
 ```
 
 ## Frequently asked questions

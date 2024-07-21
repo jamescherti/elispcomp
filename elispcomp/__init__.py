@@ -30,7 +30,7 @@ from .misc import unique_directories
 
 # True to use 'emacs --script'
 # False to use 'emacs --batch --eval'
-USE_EMACS_SCRIPT = False
+USE_EMACS_SCRIPT = True
 
 
 class ElispCompileCli:
@@ -120,12 +120,12 @@ class ElispCompileCli:
         )
 
         parser.add_argument(
-            "--strict",
+            "--ensure-native-comp-available",
             default=False,
             action="store_true",
             required=False,
-            help=("Enable strict mode to make elispcomp fail when native "
-                  "compilation is not available. Default: disabled"),
+            help=("Fail when native compilation is not available."
+                  "Default: disabled"),
         )
 
         self.args = parser.parse_args()
@@ -174,7 +174,7 @@ class ElispCompileCli:
         env["EMACS_BYTE_COMP_ENABLED"] = \
             '0' if self.args.disable_byte_comp else '1'
         env["EMACS_ENSURE_NATIVE_COMP_AVAILABLE"] = \
-            '1' if self.args.strict else '0'
+            '1' if self.args.ensure_native_comp_available else '0'
         env["EMACS_ELN_CACHE_DIR"] = \
             self.args.eln_cache if self.args.eln_cache else ""
 
