@@ -30,7 +30,7 @@ from .misc import unique_directories
 
 # True to use 'emacs --script'
 # False to use 'emacs --batch --eval'
-USE_EMACS_SCRIPT = True
+USE_EMACS_SCRIPT = False
 
 
 class ElispCompileCli:
@@ -205,7 +205,8 @@ class ElispCompileCli:
                 emacs_cmd = [emacs_bin, "--batch", "--eval", LISP_CODE]
                 subprocess.check_call(emacs_cmd, env=env,
                                       stderr=subprocess.STDOUT)
-                print("Success.")
+
+            print("Success.")
         except subprocess.CalledProcessError as err:
             print(f"Error: {err}")
             sys.exit(1)
