@@ -30,7 +30,7 @@ from .misc import unique_directories
 
 # True to use 'emacs --script'
 # False to use 'emacs --batch --eval'
-USE_EMACS_SCRIPT = False
+USE_EMACS_SCRIPT = True
 
 
 class ElispCompileCli:
