@@ -98,5 +98,9 @@ characters."
       (setq package-native-compile nil)
       (native-compile-async default-directory 'recursively)
       (while comp-files-queue
-        (sleep-for 0.25)))))
+        (sleep-for 0.25))
+      ;; Wait a little more to give enough time for Emacs to delete
+      ;; temporary files
+      (sleep-for 2)
+      )))
 """
