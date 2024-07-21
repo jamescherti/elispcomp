@@ -15,6 +15,11 @@ pip install --user elispcomp
 
 This command installs `elispcomp` and places the executable in your `~/.local/bin/` directory, making it easily accessible from your command line.
 
+## Requirements
+
+- Python 3
+- Emacs >= 28
+
 ## Usage
 
 The `elispcomp` command line tool is straightforward to use.
@@ -92,4 +97,5 @@ You should have received a copy of the GNU General Public License along with thi
 ## Links
 
 - [elispcomp @GitHub](https://github.com/jamescherti/elispcomp)
+- [elispcomp @GitHub](https://pypi.org/project/elispcomp/)
 - [Article: Introducing elispcomp: Compiling Elisp code directly from the command line](https://www.jamescherti.com/elispcomp-elisp-compilation-from-command-line/)
