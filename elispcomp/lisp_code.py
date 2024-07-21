@@ -96,11 +96,16 @@ characters."
       (setq native-comp-deferred-compilation t)
       (setq native-comp-jit-compilation t)
       (setq package-native-compile nil)
-      (native-compile-async default-directory 'recursively)
-      (while comp-files-queue
-        (sleep-for 0.25))
-      ;; Wait a little more to give enough time for Emacs to delete
-      ;; temporary files
-      (sleep-for 2)
-      )))
+
+      (let ((my-compilation-finished nil))
+        (defun my-native-compilation-finish-hook ()
+          "Hook function to set local compilation status to t."
+          (setq my-compilation-finished t))
+
+        (add-hook 'native-comp-async-all-done-hook
+                  #'my-native-compilation-finish-hook)
+        (native-compile-async default-directory 'recursively)
+
+        (while (not my-compilation-finished)
+          (sleep-for 0.25))))))
 """
