@@ -63,7 +63,7 @@ options:
                         Emacs `load-path`. This option can be used multiple times to include
                         several directories.
   -a, --ensure-native-compile-available, --ensure-native-comp-available
-                        Fail when native compilation is not available.Default: disabled
+                        Fail when native compilation is not available.
 ```
 
 ## Frequently asked questions
