@@ -64,6 +64,10 @@ If the environment variable is not declared, signal an error."
        (native-comp-available (and (featurep 'native-compile)
                                    (fboundp 'native-comp-available-p)
                                    (native-comp-available-p))))
+  ;; Say no to interactive questions (e.g., vterm asks the user to compile the
+  ;; shared library)
+  (fset 'y-or-n-p #'(lambda(&rest args) nil))
+
   (when (and native-comp-enabled
              ensure-native-comp-available
              (not native-comp-available))
