@@ -10,7 +10,8 @@
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
 #
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
@@ -31,7 +32,7 @@ setup(
     url="https://github.com/jamescherti/elispcomp",
     author="James Cherti",
     python_requires=">=3.6, <4",
-    install_requires=[],
+    install_requires=['importlib-resources; python_version<="3.8"'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: GNU General Public License (GPL)",
@@ -52,6 +53,10 @@ setup(
         "Topic :: Text Editors",
         "Topic :: Utilities",
     ],
+    include_package_data=True,
+    package_data={
+        'elispcomp': ['*.el'],
+    },
     entry_points={
         "console_scripts": [
             "elispcomp=elispcomp.__init__:command_line_interface",

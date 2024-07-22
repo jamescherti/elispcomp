@@ -25,12 +25,12 @@ import subprocess
 import sys
 import tempfile
 
-from .lisp_code import LISP_CODE
-from .misc import unique_directories
+if sys.version_info >= (3, 9):
+    from importlib.resources import files
+else:
+    from importlib_resources import files
 
-# True to use 'emacs --script'
-# False to use 'emacs --batch --eval'
-USE_EMACS_SCRIPT = True
+from .misc import unique_directories
 
 
 class ElispCompileCli:
@@ -185,26 +185,25 @@ class ElispCompileCli:
         print("[INFO] Emacs binary:", emacs_bin)
 
         try:
-            if USE_EMACS_SCRIPT:
-                temp_file_path = None
-                try:
-                    with tempfile.NamedTemporaryFile(prefix="elispcomp-",
-                                                     suffix=".el",
-                                                     delete=False) \
-                            as temp_file:
-                        temp_file.write(LISP_CODE)
-                        temp_file_path = temp_file.name
+            temp_file_path = None
+            try:
+                with tempfile.NamedTemporaryFile(prefix="elispcomp-",
+                                                 suffix=".el",
+                                                 delete=False) \
+                        as temp_file:
+                    lisp_code = \
+                        files(__package__) \
+                        .joinpath('elispcomp.el') \
+                        .read_bytes()
+                    temp_file.write(lisp_code)
+                    temp_file_path = temp_file.name
 
-                    subprocess.check_call([emacs_bin, "--script",
-                                           temp_file_path],
-                                          env=env, stderr=subprocess.STDOUT)
-                finally:
-                    if temp_file_path:
-                        os.unlink(temp_file_path)
-            else:
-                emacs_cmd = [emacs_bin, "--batch", "--eval", LISP_CODE]
-                subprocess.check_call(emacs_cmd, env=env,
-                                      stderr=subprocess.STDOUT)
+                subprocess.check_call([emacs_bin, "--script",
+                                       temp_file_path],
+                                      env=env, stderr=subprocess.STDOUT)
+            finally:
+                if temp_file_path:
+                    os.unlink(temp_file_path)
 
             print("Success.")
         except subprocess.CalledProcessError as err:
