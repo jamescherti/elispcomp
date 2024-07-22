@@ -84,6 +84,10 @@ The author utilizes the `elispcomp` tool to compile multiple Emacs Lisp files ac
 
 Additionally, the author employs the `parallel` command-line tool to enhance the efficiency of the byte-compilation process. This tool allows the distribution of the compilation workload across multiple processors, significantly accelerating the process.
 
+### Is elispcomp written in Python or Elisp?
+
+Most of what elispcomp does is written in Elisp, including scanning directories, which is handled by the Emacs functions `(byte-recompile-directory)` and `(native-compile-async)`. Python handles the command-line interface (arguments), and the Elisp code does the rest (byte compilation, native compilation, and waiting until all the .el files are byte compiled and native compiled).
+
 ## License
 
 Copyright (c) 2024 [James Cherti](https://www.jamescherti.com)
