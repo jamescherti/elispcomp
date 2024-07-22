@@ -23,7 +23,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="elispcomp",
-    version="1.0.6",
+    version="1.0.7",
     packages=find_packages(),
     description="Compiling Emacs Lisp code from the command-line",
     long_description=((Path(__file__).parent.resolve().joinpath("README.md"))
