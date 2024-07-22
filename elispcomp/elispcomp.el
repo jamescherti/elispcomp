@@ -43,16 +43,24 @@ characters."
   "Hook function to set local compilation status to t."
   (setq elispcomp-native-comp-finished t))
 
-(let* ((default-directory (getenv "EMACS_BYTE_COMP_DIR"))
-       (load-path-list (getenv "EMACS_LOAD_PATH_LIST"))
-       (eln-cache-dir (getenv "EMACS_ELN_CACHE_DIR"))
-       (jobs (getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
+(defun elispcomp-getenv (name)
+  "Ensure the environment variable NAME is declared and return its value.
+If the environment variable is not declared, signal an error."
+  (let ((value (getenv name)))
+    (unless value
+      (error "The environment variable %s is not declared" name))
+    value))
+
+(let* ((default-directory (elispcomp-getenv "EMACS_BYTE_COMP_DIR"))
+       (load-path-list (elispcomp-getenv "EMACS_LOAD_PATH_LIST"))
+       (eln-cache-dir (elispcomp-getenv "EMACS_ELN_CACHE_DIR"))
+       (jobs (elispcomp-getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
        (ensure-native-comp-available
-        (/= 0 (string-to-number (getenv "EMACS_ENSURE_NATIVE_COMP_AVAILABLE"))))
+        (/= 0 (string-to-number (elispcomp-getenv "EMACS_ENSURE_NATIVE_COMP_AVAILABLE"))))
        (byte-comp-enabled
-        (/= 0 (string-to-number (getenv "EMACS_BYTE_COMP_ENABLED"))))
+        (/= 0 (string-to-number (elispcomp-getenv "EMACS_BYTE_COMP_ENABLED"))))
        (native-comp-enabled
-        (/= 0 (string-to-number (getenv "EMACS_NATIVE_COMP_ENABLED"))))
+        (/= 0 (string-to-number (elispcomp-getenv "EMACS_NATIVE_COMP_ENABLED"))))
        (native-comp-available (and (featurep 'native-compile)
                                    (fboundp 'native-comp-available-p)
                                    (native-comp-available-p))))
