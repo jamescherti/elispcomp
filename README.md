@@ -101,5 +101,5 @@ You should have received a copy of the GNU General Public License along with thi
 ## Links
 
 - [elispcomp @GitHub](https://github.com/jamescherti/elispcomp)
-- [elispcomp @GitHub](https://pypi.org/project/elispcomp/)
+- [elispcomp @PyPI](https://pypi.org/project/elispcomp/)
 - [Article: Introducing elispcomp: Compiling Elisp code directly from the command line](https://www.jamescherti.com/elispcomp-elisp-compilation-from-command-line/)
