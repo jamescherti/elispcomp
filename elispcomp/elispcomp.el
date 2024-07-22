@@ -36,13 +36,6 @@ characters."
       (let ((default-directory (expand-file-name path)))
         (normal-top-level-add-subdirs-to-load-path)))))
 
-(defvar elispcomp-native-comp-finished nil
-  "Description.")
-
-(defun elispcomp-native-compilation-finish-hook ()
-  "Hook function to set local compilation status to t."
-  (setq elispcomp-native-comp-finished t))
-
 (defun elispcomp-getenv (name)
   "Ensure the environment variable NAME is declared and return its value.
 If the environment variable is not declared, signal an error."
@@ -99,8 +92,9 @@ If the environment variable is not declared, signal an error."
     (setq native-comp-deferred-compilation t)
     (setq native-comp-jit-compilation t)
     (setq package-native-compile nil)
+    (defvar elispcomp-native-comp-finished nil)
     (add-hook 'native-comp-async-all-done-hook
-              #'elispcomp-native-compilation-finish-hook))
+              #'(lambda() (setq elispcomp-native-comp-finished t))))
 
   ;; SHOW MESSAGES
   (message "[INFO] Recursively compile the directory: %s"
