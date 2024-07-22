@@ -27,6 +27,14 @@
 
 ;;; Code:
 
+(defun elispcomp-load-el (filename)
+  "Execute the Elisp code in the file FILENAME located in the home directory."
+  (let ((user-init-file
+         (expand-file-name filename "~")))
+    (when (file-exists-p user-init-file)
+      (load user-init-file nil t)
+      (message "[INFO] Load Elisp code: %s" user-init-file))))
+
 (defun elispcomp-add-load-paths (paths-string)
   "Add directories specified in PATHS-STRING to `load-path`.
 PATHS-STRING should be a string containing directories separated by newline
@@ -105,11 +113,16 @@ If the environment variable is not declared, signal an error."
            ensure-native-comp-available)
   (message "[INFO] Jobs: %s" jobs)
   (message "[INFO] Emacs user directory: %s" user-emacs-directory)
-  (message "[INFO] eln-cache directory: %s\n" eln-cache-dir)
-  (message "[INFO] Load path directories:\n%s\n" load-path-list)
+  (message "[INFO] eln-cache directory: %s" eln-cache-dir)
+  (message "[INFO] Load path directories:\n%s" load-path-list)
 
   ;; LOAD DIRECTORIES
   (elispcomp-add-load-paths load-path-list)
+
+  ;; Load .elispcomp.el if it exists
+  (elispcomp-load-el ".elispcomp.el")
+
+  (message "")
 
   ;; BYTE-COMP
   (when byte-comp-enabled
