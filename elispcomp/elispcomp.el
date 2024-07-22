@@ -5,7 +5,7 @@
 ;; Author: James Cherti
 ;; Version: 1
 ;; URL: https://github.com/jamescherti/elispcomp
-;; Keywords: development, tools, convenience, byte-compilation, native-compilation, build, productivity, automation
+;; Keywords: tools, convenience
 ;; Package-Requires: ((emacs "28.1"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
