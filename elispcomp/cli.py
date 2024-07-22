@@ -92,15 +92,17 @@ class ElispcompCli:
 
         parser.add_argument(
             "-b",
+            "--disable-byte-compile",
             "--disable-byte-comp",
             default=False,
             action="store_true",
             required=False,
-            help="Disable byte-compile. Default: enabled",
+            help="Disable byte compile. Default: enabled",
         )
 
         parser.add_argument(
             "-n",
+            "--disable-native-compile",
             "--disable-native-comp",
             default=False,
             action="store_true",
@@ -120,6 +122,8 @@ class ElispcompCli:
         )
 
         parser.add_argument(
+            "-a",
+            "--ensure-native-compile-available",
             "--ensure-native-comp-available",
             default=False,
             action="store_true",
@@ -158,7 +162,7 @@ class ElispcompCli:
                       f"{directory}")
                 sys.exit(1)
 
-        if self.args.disable_native_comp and self.args.disable_byte_comp:
+        if self.args.disable_native_compile and self.args.disable_byte_compile:
             print("Error: Nothing to do. Both byte compilation and native "
                   "compilation are disabled.", file=sys.stderr)
             sys.exit(1)
@@ -170,11 +174,11 @@ class ElispcompCli:
         env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
             str(self.args.jobs) if self.args.jobs else ""
         env["EMACS_NATIVE_COMP_ENABLED"] = \
-            '0' if self.args.disable_native_comp else '1'
+            '0' if self.args.disable_native_compile else '1'
         env["EMACS_BYTE_COMP_ENABLED"] = \
-            '0' if self.args.disable_byte_comp else '1'
+            '0' if self.args.disable_byte_compile else '1'
         env["EMACS_ENSURE_NATIVE_COMP_AVAILABLE"] = \
-            '1' if self.args.ensure_native_comp_available else '0'
+            '1' if self.args.ensure_native_compile_available else '0'
         env["EMACS_ELN_CACHE_DIR"] = \
             self.args.eln_cache if self.args.eln_cache else ""
 
