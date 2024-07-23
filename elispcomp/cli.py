@@ -128,7 +128,7 @@ class ElispcompCli:
             default=False,
             action="store_true",
             required=False,
-            help=("Fail when native compilation is not available."
+            help=("Fail when native compilation is not available. "
                   "Default: disabled"),
         )
 
