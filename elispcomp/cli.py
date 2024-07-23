@@ -116,9 +116,9 @@ class ElispcompCli:
             default=[],
             action="append",
             required=False,
-            help=("Recursively adds the subdirectories of the specified "
-                  "directory to the Emacs `load-path`. This option can be "
-                  "used multiple times to include several directories."),
+            help=("Add the specified directory to the Emacs `load-path`. "
+                  "This option can be used multiple times to include several "
+                  "directories."),
         )
 
         parser.add_argument(
@@ -130,6 +130,17 @@ class ElispcompCli:
             required=False,
             help=("Fail when native compilation is not available."
                   "Default: disabled"),
+        )
+
+        parser.add_argument(
+            "-l",
+            "--compile-initial-load-paths",
+            default=False,
+            action="store_true",
+            required=False,
+            help=("Also compile the initial paths in `load-path` "
+                  "(generally Emacs Lisp code) and site run file. "
+                  "Default: disabled."),
         )
 
         self.args = parser.parse_args()
@@ -181,6 +192,8 @@ class ElispcompCli:
             '1' if self.args.ensure_native_compile_available else '0'
         env["EMACS_ELN_CACHE_DIR"] = \
             self.args.eln_cache if self.args.eln_cache else ""
+        env["EMACS_COMPILE_INITIAL_LOAD_PATHS"] = \
+            '1' if self.args.compile_initial_load_paths else "0"
 
         env["EMACS_LOAD_PATH_LIST"] = \
             "\n".join(unique_directories([directory] + self.args.load_path))

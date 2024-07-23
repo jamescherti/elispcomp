@@ -52,10 +52,22 @@ If the environment variable is not declared, signal an error."
       (error "The environment variable %s is not declared" name))
     value))
 
+(defun elispcomp-byte-and-native-compile-load-path ()
+  "Byte compile and native compile all paths in load-path."
+  (dolist (path load-path)
+    (when (file-directory-p path)
+      (message "[BYTE-COMPILE] %s" path)
+      (byte-recompile-directory path 0)
+      (message "[NATIVE-COMPILE] %s" path)
+      (native-compile-async path t))))
+
 (let* ((default-directory (elispcomp-getenv "EMACS_BYTE_COMP_DIR"))
        (load-path-list (elispcomp-getenv "EMACS_LOAD_PATH_LIST"))
        (eln-cache-dir (elispcomp-getenv "EMACS_ELN_CACHE_DIR"))
        (jobs (elispcomp-getenv "EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"))
+       (compile-initial-load-paths-p
+        (/= 0 (string-to-number
+               (elispcomp-getenv "EMACS_COMPILE_INITIAL_LOAD_PATHS"))))
        (ensure-native-comp-available
         (/= 0 (string-to-number (elispcomp-getenv "EMACS_ENSURE_NATIVE_COMP_AVAILABLE"))))
        (byte-comp-enabled
@@ -116,11 +128,23 @@ If the environment variable is not declared, signal an error."
   (message "[INFO] eln-cache directory: %s" eln-cache-dir)
   (message "[INFO] Load path directories:\n%s" load-path-list)
 
-  ;; LOAD DIRECTORIES
-  (elispcomp-add-load-paths load-path-list)
-
   ;; Load .elispcomp.el if it exists
   (elispcomp-load-el ".elispcomp.el")
+
+  ;; BEFORE ADDING LOAD PATHS: BYTE COMPILE AND NATIVE COMPILE STANDARD PATHS
+  (when compile-initial-load-paths-p
+    (dolist (path load-path)
+      (when (file-directory-p path)
+        (when byte-comp-enabled
+          (message "[TASK] Byte compile initial load-path: %s" path)
+          (byte-recompile-directory path 0))
+
+        (when native-comp-enabled
+          (message "[TASK] Native compile initial load-path: %s" path)
+          (native-compile-async path t)))))
+
+  ;; LOAD DIRECTORIES
+  (elispcomp-add-load-paths load-path-list)
 
   (message "")
 
@@ -132,7 +156,7 @@ If the environment variable is not declared, signal an error."
   ;; NATIVE-COMP
   (when (and native-comp-enabled native-comp-available)
     (message "[TASK] Native compile")
-    (native-compile-async default-directory 'recursively)
+    (native-compile-async default-directory t)
     (while (not elispcomp-native-comp-finished)
       (sleep-for 0.25))))
 
