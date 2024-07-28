@@ -72,7 +72,7 @@ options:
 
 Indeed, when configured appropriately, Emacs can compile to both `.elc` and `.eln` files.
 
-The `elispcomp` command-line tool is an Emacs wrapper that makes it easy to compile Emacs Lisp (Elisp) code directly from the terminal or from a script. It provides options and ensures that the byte compilation and native compilation processes are truly finished before quitting with an error code.
+The `elispcomp` command-line tool is an Emacs wrapper that makes it easy to compile Emacs Lisp (Elisp) code directly from the terminal or from a script. It provides options and ensures that the byte compilation and native compilation processes are truly finished before quitting.
 
 The `elispcomp` command-line tool can also be used in conjunction with other tools like `parallel` to speed up the compilation process.
 
@@ -84,7 +84,7 @@ Additionally, the author employs the `parallel` command-line tool to enhance the
 
 ### Is elispcomp written in Python or Elisp?
 
-Most of what elispcomp does is written in Elisp, including scanning directories, which is handled by the Emacs functions `(byte-recompile-directory)` and `(native-compile-async)`. Python handles the command-line interface (arguments), and Emacs and the Elisp code does the rest (byte compilation, native compilation, and waiting until all the .el files are byte compiled and native compiled).
+Most of what `elispcomp` does is written in Elisp (Emacs Lisp), including scanning directories, which is handled by the Emacs functions `(byte-recompile-directory)` and `(native-compile-async)`. Python handles the command-line interface (arguments), and Emacs and the Elisp code does the rest (byte compilation, native compilation, and waiting until all the .el files are byte compiled and native compiled).
 
 ## License
 
