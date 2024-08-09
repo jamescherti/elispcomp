@@ -101,3 +101,6 @@ You should have received a copy of the GNU General Public License along with thi
 - [elispcomp @GitHub](https://github.com/jamescherti/elispcomp)
 - [elispcomp @PyPI](https://pypi.org/project/elispcomp/)
 - [Article: Introducing elispcomp: Compiling Elisp code directly from the command line](https://www.jamescherti.com/elispcomp-elisp-compilation-from-command-line/)
+
+Other Emacs packages from the same author:
+- [minimal-emacs.d](https://github.com/jamescherti/minimal-emacs.d): This repository hosts a minimal Emacs configuration designed to serve as a foundation for your vanilla Emacs setup and provide a solid base for an enhanced Emacs experience.
