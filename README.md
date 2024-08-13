@@ -1,5 +1,4 @@
 # elispcomp - Compile Emacs Lisp code from the command-line
-![License](https://img.shields.io/github/license/jamescherti/elispcomp)
 
 The `elispcomp` command line tool allows compiling Emacs Lisp (Elisp) code directly from the terminal or from a shell script. It facilitates the generation of optimized `.elc` (byte-compiled) and `.eln` (native-compiled) files, which can significantly improve the performance of Emacs.
 
