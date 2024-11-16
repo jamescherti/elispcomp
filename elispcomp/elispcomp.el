@@ -53,7 +53,7 @@ If the environment variable is not declared, signal an error."
     value))
 
 (defun elispcomp-byte-and-native-compile-load-path ()
-  "Byte compile and native compile all paths in load-path."
+  "Byte compile and native compile all paths in `load-path'."
   (dolist (path load-path)
     (when (file-directory-p path)
       (message "[BYTE-COMPILE] %s" path)
@@ -79,7 +79,7 @@ If the environment variable is not declared, signal an error."
                                    (native-comp-available-p))))
   ;; Say no to interactive questions (e.g., vterm asks the user to compile the
   ;; shared library)
-  (fset 'y-or-n-p #'(lambda(&rest args) nil))
+  (fset 'y-or-n-p #'(lambda(&rest _args) nil))
 
   (when (and native-comp-enabled
              ensure-native-comp-available
@@ -111,10 +111,7 @@ If the environment variable is not declared, signal an error."
     (setq native-comp-verbose 0)
     (setq native-comp-deferred-compilation t)
     (setq native-comp-jit-compilation t)
-    (setq package-native-compile nil)
-    (defvar elispcomp-native-comp-finished nil)
-    (add-hook 'native-comp-async-all-done-hook
-              #'(lambda() (setq elispcomp-native-comp-finished t))))
+    (setq package-native-compile nil))
 
   ;; SHOW MESSAGES
   (message "[INFO] Recursively compile the directory: %s"
@@ -157,8 +154,8 @@ If the environment variable is not declared, signal an error."
   (when (and native-comp-enabled native-comp-available)
     (message "[TASK] Native compile")
     (native-compile-async default-directory t)
-    (while (not elispcomp-native-comp-finished)
-      (sleep-for 0.25))))
+    (while (> (length comp-files-queue) 0)
+      (sleep-for 0.2))))
 
 (provide 'elispcomp)
 ;;; elispcomp.el ends here
