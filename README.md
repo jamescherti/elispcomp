@@ -1,5 +1,9 @@
 # elispcomp - Compile Emacs Lisp code from the command-line
 
+(NOTE: If you prefer using an Emacs packages, I recommend giving the [compile-angel.el @GitHub](https://github.com/jamescherti/compile-angel.el) a try. The compile-angel package guarantees that all .el files are both byte-compiled and native-compiled, which significantly speeds up Emacs.)
+
+## Introduction
+
 The `elispcomp` command line tool allows compiling Emacs Lisp (Elisp) code directly from the terminal or from a shell script. It facilitates the generation of optimized `.elc` (byte-compiled) and `.eln` (native-compiled) files, which can significantly improve the performance of Emacs.
 
 The command line tool executes a headless instance of Emacs and Elisp that recursively scans the specified directories, byte compiling and native compiling all the `.el` files that haven't been compiled yet. It supports various configuration options, allowing you to adapt the compilation process to suit your needs.
