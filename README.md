@@ -1,6 +1,6 @@
 # elispcomp - Compile Emacs Lisp code from the command-line
 
-(NOTE: If you prefer using an Emacs packages, I recommend giving the [compile-angel.el @GitHub](https://github.com/jamescherti/compile-angel.el) a try. The compile-angel package guarantees that all .el files are both byte-compiled and native-compiled, which significantly speeds up Emacs.)
+(The author also recommends trying: **[compile-angel.el @GitHub](https://github.com/jamescherti/compile-angel.el)**. The compile-angel package automatically byte-compiles and native-compiles Emacs Lisp libraries, transparently, without any user intervention.)
 
 ## Introduction
 
