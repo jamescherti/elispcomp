@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2024 James Cherti
+# Copyright (c) 2024-2025 James Cherti
 # URL: https://github.com/jamescherti/elispcomp
 #
 # This program is free software: you can redistribute it and/or modify it under
