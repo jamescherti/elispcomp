@@ -43,11 +43,11 @@ class ElispcompCli:
 
         self._flight_checks()
 
-        if not self.args.directories:
+        if not self.args.dirs_or_files:
             print("Nothing to do.")
             sys.exit(1)
 
-        for directory in self.args.directories:
+        for directory in self.args.dirs_or_files:
             self._compile(directory)
 
     def _parse_args(self):
@@ -56,9 +56,9 @@ class ElispcompCli:
         parser = argparse.ArgumentParser(description=__doc__.splitlines()[0],
                                          usage=usage)
         parser.add_argument(
-            "directories", metavar="N", type=str, nargs="*",
-            help=("The directories to be scanned recursively by Emacs "
-                  "to locate the '.el' files for compilation."),
+            "dirs_or_files", metavar="N", type=str, nargs="*",
+            help=("The .el files or directories containing .el files "
+                  "to compile."),
         )
 
         parser.add_argument(
@@ -162,15 +162,15 @@ class ElispcompCli:
                 self.args.eln_cache = \
                     os.path.abspath(self.args.eln_cache)
 
-        for directory in self.args.directories + self.args.load_path:
+        for directory in self.args.dirs_or_files + self.args.load_path:
             if not os.path.exists(directory):
                 print(f"Error: The directory does not exist at the "
                       f"specified path: {directory}")
                 sys.exit(1)
 
-            if not os.path.isdir(directory):
-                print("Error: The specified path is not a directory: "
-                      f"{directory}")
+            if not os.path.isdir(directory) and not os.path.isfile(directory):
+                print("Error: The specified path is not a file or a "
+                      f"directory: {directory}")
                 sys.exit(1)
 
         if self.args.disable_native_compile and self.args.disable_byte_compile:
@@ -178,10 +178,14 @@ class ElispcompCli:
                   "compilation are disabled.", file=sys.stderr)
             sys.exit(1)
 
-    def _compile(self, directory: str):
+    def _compile(self, dir_or_file: str):
         env = os.environ.copy()
-        directory = os.path.abspath(directory)
-        env["EMACS_BYTE_COMP_DIR"] = directory
+        dir_or_file = os.path.abspath(dir_or_file)
+        byte_comp_dir = dir_or_file \
+            if os.path.isdir(dir_or_file) \
+            else os.path.dirname(dir_or_file)
+        env["EMACS_BYTE_COMP_DIR"] = byte_comp_dir
+        env["EMACS_DIR_OR_FILE"] = dir_or_file
         env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
             str(self.args.jobs) if self.args.jobs else ""
         env["EMACS_NATIVE_COMP_ENABLED"] = \
@@ -196,7 +200,8 @@ class ElispcompCli:
             '1' if self.args.compile_initial_load_paths else "0"
 
         env["EMACS_LOAD_PATH_LIST"] = \
-            "\n".join(unique_directories([directory] + self.args.load_path))
+            "\n".join(unique_directories([byte_comp_dir] +
+                                         self.args.load_path))
 
         emacs_bin = shutil.which(self.args.emacs_bin)
         print("[INFO] Emacs binary:", emacs_bin)
@@ -218,6 +223,8 @@ class ElispcompCli:
                 subprocess.check_call([emacs_bin, "--script",
                                        temp_file_path],
                                       env=env, stderr=subprocess.STDOUT)
+            except KeyboardInterrupt:
+                sys.exit(1)
             finally:
                 if temp_file_path:
                     os.unlink(temp_file_path)
