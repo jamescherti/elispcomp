@@ -1,6 +1,6 @@
 ;;; elispcomp.el --- Compile Elisp code from the command-line -*- lexical-binding: t -*-
 
-;; Copyright (C) 2024-2025 James Cherti | https://www.jamescherti.com/contact/
+;; Copyright (C) 2024-2026 James Cherti | https://www.jamescherti.com/contact/
 
 ;; Author: James Cherti
 ;; Version: 1
