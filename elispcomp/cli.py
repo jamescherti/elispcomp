@@ -79,7 +79,7 @@ class ElispcompCli:
             help="Path to the Emacs binary. Defaults: emacs",
         )
 
-        half_cpus = os.cpu_count() // 2
+        half_cpus = (os.cpu_count() or 1) // 2
         parser.add_argument(
             "-j",
             "--jobs",
