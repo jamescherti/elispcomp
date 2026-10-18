@@ -1,4 +1,7 @@
-*.elc
+# Ruff
+.ruff_cache/
+coverage.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

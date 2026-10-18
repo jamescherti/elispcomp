@@ -53,12 +53,15 @@ class ElispcompCli:
     def _parse_args(self):
         """Parse command-line arguments."""
         usage = "%(prog)s [--option] [N]"
-        parser = argparse.ArgumentParser(description=__doc__.splitlines()[0],
-                                         usage=usage)
+        parser = argparse.ArgumentParser(
+            description=__doc__.splitlines()[0], usage=usage
+        )
         parser.add_argument(
-            "dirs_or_files", metavar="N", type=str, nargs="*",
-            help=("The .el files or directories containing .el files "
-                  "to compile."),
+            "dirs_or_files",
+            metavar="N",
+            type=str,
+            nargs="*",
+            help=("The .el files or directories containing .el files to compile."),
         )
 
         parser.add_argument(
@@ -66,9 +69,11 @@ class ElispcompCli:
             "--eln-cache",
             default=None,
             required=False,
-            help=("The eln-cache directory where Emacs stores the "
-                  "compiled native compiled code. Defaults to "
-                  "the default Emacs eln-cache directory."),
+            help=(
+                "The eln-cache directory where Emacs stores the "
+                "compiled native compiled code. Defaults to "
+                "the default Emacs eln-cache directory."
+            ),
         )
 
         parser.add_argument(
@@ -86,8 +91,10 @@ class ElispcompCli:
             type=int,
             default=half_cpus,
             required=False,
-            help=("Specify the number of parallel jobs for compilation. "
-                  "Default: Half the number of available CPUs"),
+            help=(
+                "Specify the number of parallel jobs for compilation. "
+                "Default: Half the number of available CPUs"
+            ),
         )
 
         parser.add_argument(
@@ -116,9 +123,11 @@ class ElispcompCli:
             default=[],
             action="append",
             required=False,
-            help=("Add the specified directory to the Emacs `load-path`. "
-                  "This option can be used multiple times to include several "
-                  "directories."),
+            help=(
+                "Add the specified directory to the Emacs `load-path`. "
+                "This option can be used multiple times to include several "
+                "directories."
+            ),
         )
 
         parser.add_argument(
@@ -128,8 +137,7 @@ class ElispcompCli:
             default=False,
             action="store_true",
             required=False,
-            help=("Fail when native compilation is not available. "
-                  "Default: disabled"),
+            help=("Fail when native compilation is not available. Default: disabled"),
         )
 
         parser.add_argument(
@@ -138,70 +146,81 @@ class ElispcompCli:
             default=False,
             action="store_true",
             required=False,
-            help=("Also compile the initial paths in `load-path` "
-                  "(generally Emacs Lisp code) and site run file. "
-                  "Default: disabled."),
+            help=(
+                "Also compile the initial paths in `load-path` "
+                "(generally Emacs Lisp code) and site run file. "
+                "Default: disabled."
+            ),
         )
 
         self.args = parser.parse_args()
 
     def _flight_checks(self):
         if not shutil.which(self.args.emacs_bin):
-            print("Error: Command not found or not executable: "
-                  f"{self.args.emacs_bin}", file=sys.stderr)
+            print(
+                f"Error: Command not found or not executable: {self.args.emacs_bin}",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
-        if self.args.eln_cache and \
-                not os.path.exists(self.args.eln_cache):
+        if self.args.eln_cache and not os.path.exists(self.args.eln_cache):
             try:
                 os.mkdir(self.args.eln_cache)
             except OSError as err:
                 print(f"Error: {err}")
                 sys.exit(1)
             else:
-                self.args.eln_cache = \
-                    os.path.abspath(self.args.eln_cache)
+                self.args.eln_cache = os.path.abspath(self.args.eln_cache)
 
         for directory in self.args.dirs_or_files + self.args.load_path:
             if not os.path.exists(directory):
-                print(f"Error: The directory does not exist at the "
-                      f"specified path: {directory}")
+                print(
+                    f"Error: The directory does not exist at the "
+                    f"specified path: {directory}"
+                )
                 sys.exit(1)
 
             if not os.path.isdir(directory) and not os.path.isfile(directory):
-                print("Error: The specified path is not a file or a "
-                      f"directory: {directory}")
+                print(
+                    "Error: The specified path is not a file or a "
+                    f"directory: {directory}"
+                )
                 sys.exit(1)
 
         if self.args.disable_native_compile and self.args.disable_byte_compile:
-            print("Error: Nothing to do. Both byte compilation and native "
-                  "compilation are disabled.", file=sys.stderr)
+            print(
+                "Error: Nothing to do. Both byte compilation and native "
+                "compilation are disabled.",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
     def _compile(self, dir_or_file: str):
         env = os.environ.copy()
         dir_or_file = os.path.abspath(dir_or_file)
-        byte_comp_dir = dir_or_file \
-            if os.path.isdir(dir_or_file) \
-            else os.path.dirname(dir_or_file)
+        byte_comp_dir = (
+            dir_or_file if os.path.isdir(dir_or_file) else os.path.dirname(dir_or_file)
+        )
         env["EMACS_BYTE_COMP_DIR"] = byte_comp_dir
         env["EMACS_DIR_OR_FILE"] = dir_or_file
-        env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = \
+        env["EMACS_NATIVE_COMP_ASYNC_JOBS_NUMBER"] = (
             str(self.args.jobs) if self.args.jobs else ""
-        env["EMACS_NATIVE_COMP_ENABLED"] = \
-            '0' if self.args.disable_native_compile else '1'
-        env["EMACS_BYTE_COMP_ENABLED"] = \
-            '0' if self.args.disable_byte_compile else '1'
-        env["EMACS_ENSURE_NATIVE_COMP_AVAILABLE"] = \
-            '1' if self.args.ensure_native_compile_available else '0'
-        env["EMACS_ELN_CACHE_DIR"] = \
-            self.args.eln_cache if self.args.eln_cache else ""
-        env["EMACS_COMPILE_INITIAL_LOAD_PATHS"] = \
-            '1' if self.args.compile_initial_load_paths else "0"
+        )
+        env["EMACS_NATIVE_COMP_ENABLED"] = (
+            "0" if self.args.disable_native_compile else "1"
+        )
+        env["EMACS_BYTE_COMP_ENABLED"] = "0" if self.args.disable_byte_compile else "1"
+        env["EMACS_ENSURE_NATIVE_COMP_AVAILABLE"] = (
+            "1" if self.args.ensure_native_compile_available else "0"
+        )
+        env["EMACS_ELN_CACHE_DIR"] = self.args.eln_cache if self.args.eln_cache else ""
+        env["EMACS_COMPILE_INITIAL_LOAD_PATHS"] = (
+            "1" if self.args.compile_initial_load_paths else "0"
+        )
 
-        env["EMACS_LOAD_PATH_LIST"] = \
-            "\n".join(unique_directories([byte_comp_dir] +
-                                         self.args.load_path))
+        env["EMACS_LOAD_PATH_LIST"] = "\n".join(
+            unique_directories([byte_comp_dir] + self.args.load_path)
+        )
 
         emacs_bin = shutil.which(self.args.emacs_bin)
         print("[INFO] Emacs binary:", emacs_bin)
@@ -209,20 +228,18 @@ class ElispcompCli:
         try:
             temp_file_path = None
             try:
-                with tempfile.NamedTemporaryFile(prefix="elispcomp-",
-                                                 suffix=".el",
-                                                 delete=False) \
-                        as temp_file:
-                    lisp_code = \
-                        files(__package__) \
-                        .joinpath('elispcomp.el') \
-                        .read_bytes()
+                with tempfile.NamedTemporaryFile(
+                    prefix="elispcomp-", suffix=".el", delete=False
+                ) as temp_file:
+                    lisp_code = files(__package__).joinpath("elispcomp.el").read_bytes()
                     temp_file.write(lisp_code)
                     temp_file_path = temp_file.name
 
-                subprocess.check_call([emacs_bin, "--script",
-                                       temp_file_path],
-                                      env=env, stderr=subprocess.STDOUT)
+                subprocess.check_call(
+                    [emacs_bin, "--script", temp_file_path],
+                    env=env,
+                    stderr=subprocess.STDOUT,
+                )
             except KeyboardInterrupt:
                 sys.exit(1)
             finally:
