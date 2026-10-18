@@ -1,0 +1,73 @@
+#
+# Copyright (c) 2024-2026 James Cherti
+# URL: https://github.com/jamescherti/elispcomp
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+#
+
+[build-system]
+requires = ["setuptools>=77.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elispcomp"
+version = "1.1.1"
+description = "Compiling Emacs Lisp code from the command-line"
+readme = "README.md"
+authors = [
+  { name = "James Cherti" }
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+requires-python = ">=3.9, <4"
+dependencies = [
+  'importlib-resources; python_version <= "3.8"',
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Environment :: Plugins",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: POSIX :: Other",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: System :: Systems Administration",
+  "Topic :: Text Editors",
+  "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/jamescherti/elispcomp"
+Repository = "https://github.com/jamescherti/elispcomp"
+
+[project.scripts]
+elispcomp = "elispcomp:command_line_interface"
+
+[tool.setuptools.package-data]
+elispcomp = ["*.el"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["elispcomp*"]
