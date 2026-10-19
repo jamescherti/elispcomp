@@ -19,10 +19,9 @@
 """Miscellaneous functions."""
 
 from pathlib import Path
-from typing import List
 
 
-def unique_directories(list_dirs: List[Path]) -> List[str]:
+def unique_directories(list_dirs: list[Path]) -> list[str]:
     """Return directories ensuring no directory is contained within another.
 
     :param list_dirs: A list of directory paths.
