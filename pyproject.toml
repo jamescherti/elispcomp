@@ -22,7 +22,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "elispcomp"
-version = "1.1.1"
+version = "1.1.2"
 description = "Compiling Emacs Lisp code from the command-line"
 readme = "README.md"
 authors = [
